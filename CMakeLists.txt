@@ -13,8 +13,8 @@ target_include_directories(info PUBLIC ${DPDK_INCLUDE})
 target_link_libraries(info pthread dl numa)
 target_link_libraries(info ${DPDK_LIB})
 
-add_executable(test1 test1.cc)
-target_include_directories(test1 PUBLIC ${DPDK_INCLUDE})
-target_link_libraries(test1 pthread dl numa)
-target_link_libraries(test1 ${DPDK_LIB})
+add_executable(rx test1.cc)
+target_include_directories(rx PUBLIC ${DPDK_INCLUDE})
+target_link_libraries(rx pthread dl numa)
+target_link_libraries(rx ${DPDK_LIB})
 

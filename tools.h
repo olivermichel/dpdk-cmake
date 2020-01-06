@@ -56,4 +56,19 @@ namespace dpdk_tools {
 			}
 		}
 	}
+
+	void start_port(unsigned port_index_)
+	{
+		if (rte_eth_dev_start(port_index_) < 0)
+			throw std::runtime_error("rte_eth_dev_start: failed");
+	}
+
+	std::array<unsigned char, 6> get_port_mac_address(unsigned port_index)
+	{
+		struct rte_ether_addr addr;
+		std::array<unsigned char, 6> mac_addr = { 0, 0, 0, 0, 0, 0 };
+		rte_eth_macaddr_get(port_index, &addr);
+
+		return mac_addr;
+	}
 }
