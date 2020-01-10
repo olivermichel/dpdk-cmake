@@ -99,4 +99,16 @@ namespace dpdk_tools {
 
 		return addr;
 	}
+
+	uint32_t ipv4_addr_from_string(const std::string& s_)
+	{
+		unsigned char a[4] = {0};
+		int bytes = sscanf(s_.c_str(), "%hhd.%hhd.%hhd.%hhd",a+0, a+1, a+2, a+3);
+
+		if (bytes != 4)
+			throw std::invalid_argument("invalid ip address");
+
+		return (uint32_t)(a[0]) << 24 | (uint32_t)(a[1]) << 16 |
+			(uint32_t)(a[2]) << 8 | (uint32_t)(a[3]);
+	}
 }

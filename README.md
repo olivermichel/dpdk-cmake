@@ -20,3 +20,7 @@ Basic DPDK example applications for Linux using the cmake build system.
     ./bind.sh eth1
 
     exit
+
+### Usage example
+
+    ./tx -- -m 02:3a:a4:9a:3d:a4 -s 172.19.20.11 -d 172.19.20.12
