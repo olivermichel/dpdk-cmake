@@ -4,6 +4,16 @@
 
 namespace dpdk_tools {
 
+	int init_eal(int argc_, char** argv_)
+	{
+		int init_status = rte_eal_init(argc_, argv_);
+
+		if (init_status < 0)
+			throw std::runtime_error("rte_eal_init: failed initializing eal");
+
+		return init_status;
+	}
+
 	struct rte_mempool* init_mbuf_pool(unsigned num_mbufs_ = 8191, unsigned port_count_ = 1,
 		unsigned mbuf_cache_size_ = 250)
 	{
@@ -23,12 +33,13 @@ namespace dpdk_tools {
 		const unsigned RX_RING_SIZE = 1024;
 		const unsigned TX_RING_SIZE = 1024;
 
-		const struct rte_eth_conf port_conf_default = {
-			.rxmode = {
-				.max_rx_pkt_len = RTE_ETHER_MAX_LEN,
-			},
-		};
-
+		struct rte_eth_conf port_conf_default;
+		port_conf_default.rxmode.max_rx_pkt_len = RTE_ETHER_MAX_LEN;
+		port_conf_default.rxmode.mq_mode        = ETH_MQ_RX_NONE;
+		port_conf_default.rxmode.offloads       = 0;
+		port_conf_default.txmode.mq_mode        = ETH_MQ_TX_NONE;
+		port_conf_default.txmode.offloads       = 0;
+		
 		struct rte_eth_conf port_conf = port_conf_default;
 		uint16_t nb_rxd = RX_RING_SIZE;
 		uint16_t nb_txd = TX_RING_SIZE;
@@ -63,12 +74,29 @@ namespace dpdk_tools {
 			throw std::runtime_error("rte_eth_dev_start: failed");
 	}
 
-	std::array<unsigned char, 6> get_port_mac_address(unsigned port_index)
+	struct rte_ether_addr rte_ether_addr_from_port(unsigned port_index_)
 	{
 		struct rte_ether_addr addr;
-		std::array<unsigned char, 6> mac_addr = { 0, 0, 0, 0, 0, 0 };
-		rte_eth_macaddr_get(port_index, &addr);
+		if (rte_eth_macaddr_get(port_index_, &addr) != 0)
+			throw std::runtime_error("rte_eth_macaddr_get: failed");
+		return addr;
+	}
 
-		return mac_addr;
+	struct rte_ether_addr rte_ether_addr_from_string(const std::string& s_)
+	{
+		struct rte_ether_addr addr;
+
+		int bytes = std::sscanf(s_.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+			addr.addr_bytes + 0, 
+			addr.addr_bytes + 1,
+			addr.addr_bytes + 2,
+			addr.addr_bytes + 3,
+			addr.addr_bytes + 4,
+			addr.addr_bytes + 5);
+
+		if (bytes != RTE_ETHER_ADDR_LEN)
+			throw std::invalid_argument("invalid mac address");
+
+		return addr;
 	}
 }

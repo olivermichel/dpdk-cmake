@@ -4,15 +4,14 @@
 #include <rte_eal.h>
 #include <rte_ethdev.h>
 
-int main(int argc, char** argv) {
+#include "tools.h"
 
-    auto init_status = rte_eal_init(argc, argv);
+int main(int argc_, char** argv_)
+{
+    auto eal_init_status = dpdk_tools::init_eal(argc_, argv_);
 
-    if (init_status < 0)
-        rte_exit(EXIT_FAILURE, "failed initializing EAL");
-
-    argc -= init_status;
-	argv += init_status;
+    argc_ -= eal_init_status;
+	argv_ += eal_init_status;
 
 	unsigned port_count = rte_eth_dev_count_avail();
 	std::cout << "rte_eth_dev_count_avail: " << port_count << std::endl;
