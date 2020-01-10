@@ -1,7 +1,7 @@
 
 ## DPDK Example Applications
 
-Basic DPDK Example Applications for Linux using the cmake build system.
+Basic DPDK example applications for Linux using the cmake build system.
 
 ### Compile Example Applications
 
