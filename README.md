@@ -1,4 +1,13 @@
 
+## DPDK Example Applications
+
+Basic DPDK Example Applications for Linux using the cmake build system.
+
+### Compile Example Applications
+
+    mkdir build && cd build
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    make -j$(nproc)
 
 ### Enable DPDK on an interface
 
@@ -11,5 +20,3 @@
     ./bind.sh eth1
 
     exit
-
-### Run testpmd
